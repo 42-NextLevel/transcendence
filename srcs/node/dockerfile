@@ -6,7 +6,7 @@
 FROM node:16-slim
 # replace this with your application's default port
 EXPOSE 8888
+WORKDIR /home/node/app
+COPY ./frontend .
 
-COPY package.json package-lock.json ./
-
-# ENTRYPOINT [ "executable" ]
+ENTRYPOINT [ "npm", "start" ]

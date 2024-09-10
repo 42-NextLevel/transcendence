@@ -1,50 +1,97 @@
-version: "2"
 services:
-  node: # node 공식 사이트 예시. dockerfile 을 만들지 않아도 되는 버전인데, 수정해서 dockerfile 을 작성하거나, 여기에 맞에 준비하면 끝난다.
-    image: "node:12"
+  front_end:
+    container_name: node
+    build:
+      context: ./node
     user: "node"
-    working_dir: /home/node/app
     environment:
       - NODE_ENV=production
     volumes:
-      - ./:/home/node/app
+      - frontend:/home/node/app
     expose:
       - "8081"
-    ports: # use if it is necessary to expose the container to the host machine
-      - "8001:8001"
-    command: "npm start"
+    networks:
+      - intra_net
 
-  db: # posegres github 에서 받은 공직 docker-compose 기본 양식. dockerfile 에 링크 참고.
-    image: postgres
-    restart: always
-    # set shared memory limit when using docker-compose
-    shm_size: 128mb
-    # or set shared memory limit when deploy via swarm stack
-    #volumes:
-    #  - type: tmpfs
-    #    target: /dev/shm
-    #    tmpfs:
-    #      size: 134217728 # 128*2^20 bytes = 128Mb
+  back_end:
+    container_name: django
+    build:
+      context: ./django
+    user: "django"
     environment:
-      POSTGRES_PASSWORD: example
+      - DJANGO_ENV=production
+    volumes:
+      - backend:/usr/src/app
+    expose:
+      - "8000"
+    networks:
+      - intra_net
+
+  database:
+    container_name: pgsql
+    build:
+      context: ./pgsql
+    restart: always
+    shm_size: 128mb
+    # 데이터 경로 찾아서 수정
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "1234"
+    networks:
+      - intra_net
 
   nginx:
     container_name: nginx
     restart: always
     depends_on:
-      - wordpress
+      - database
     build:
-      context: ./requirements/nginx
-      args:
-        - CERT_KEY=${CERT_KEY}
-        - CERT_CRT=${CERT_CRT}
+      context: ./nginx
+      # args:
+      #   - CERT_KEY=${CERT_KEY}
+      #   - CERT_CRT=${CERT_CRT}
     volumes:
-      - wordpress:/var/www/html # 수정 필요.
+      - frontend:/var/www/html # 수정 필요.
     ports:
       - "443:443"
     expose:
       - "443"
     networks:
-      - docker_net
+      - intra_net
 
-  
+  redis:
+    container_name: redis
+    restart: always
+    build: ./redis
+    expose:
+      - 6379
+    networks:
+      - intra_net
+
+volumes:
+  frontend:
+    name: frontend
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/node/frontend
+      o: bind,rw
+  backend:
+    name: backend
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/django/backend
+      o: bind,rw
+  database:
+    name: database
+    driver: local
+    driver_opts:
+      type: none
+      device: /Users/seongwol/data
+      o: bind,rw
+
+networks:
+  intra_net:
+    driver: bridge
