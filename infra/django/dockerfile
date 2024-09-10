@@ -1,0 +1,18 @@
+# 일단 3.12 기준으로 잡았는데 BE 측에서 원하는 버전으로 수정해야함.
+FROM python:3.12
+
+RUN apt-get update \
+	&& apt-get install -y --no-install-recommends \
+		postgresql-client \
+	&& rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+# BE 쪽에서 작업데이터의 루트를 이쪽으로 잡아와야한다. 경로 수정 반드시해야겠지?
+COPY . .
+
+EXPOSE 8000
+
+# 127.0.0.1:8080 수정해야겠지?
+CMD ["python3", "manage.py", "runserver", "127.0.0.1:8000"]

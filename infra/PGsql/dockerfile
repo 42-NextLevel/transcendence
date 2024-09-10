@@ -1,0 +1,3 @@
+# https://github.com/docker-library/docs/blob/master/postgres/README.md 참고해서 끝까지 작성할 것.
+
+FROM postgres:latest

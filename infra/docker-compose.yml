@@ -1,0 +1,50 @@
+version: "2"
+services:
+  node: # node 공식 사이트 예시. dockerfile 을 만들지 않아도 되는 버전인데, 수정해서 dockerfile 을 작성하거나, 여기에 맞에 준비하면 끝난다.
+    image: "node:12"
+    user: "node"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/home/node/app
+    expose:
+      - "8081"
+    ports: # use if it is necessary to expose the container to the host machine
+      - "8001:8001"
+    command: "npm start"
+
+  db: # posegres github 에서 받은 공직 docker-compose 기본 양식. dockerfile 에 링크 참고.
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    environment:
+      POSTGRES_PASSWORD: example
+
+  nginx:
+    container_name: nginx
+    restart: always
+    depends_on:
+      - wordpress
+    build:
+      context: ./requirements/nginx
+      args:
+        - CERT_KEY=${CERT_KEY}
+        - CERT_CRT=${CERT_CRT}
+    volumes:
+      - wordpress:/var/www/html # 수정 필요.
+    ports:
+      - "443:443"
+    expose:
+      - "443"
+    networks:
+      - docker_net
+
+  
