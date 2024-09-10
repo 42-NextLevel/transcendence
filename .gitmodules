@@ -1,0 +1,3 @@
+[submodule "srcs/node/frontend"]
+	path = srcs/node/frontend
+	url = https://github.com/42-NextLevel/frontend.git
