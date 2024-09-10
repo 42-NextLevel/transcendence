@@ -48,11 +48,11 @@ services:
       - database
     build:
       context: ./nginx
-      # args:
-      #   - CERT_KEY=${CERT_KEY}
-      #   - CERT_CRT=${CERT_CRT}
+      args:
+        - CERT_KEY=${CERT_KEY}
+        - CERT_CRT=${CERT_CRT}
     volumes:
-      - frontend:/var/www/html # 수정 필요.
+      - frontend:/var/www/html
     ports:
       - "443:443"
     expose:
@@ -65,7 +65,7 @@ services:
     restart: always
     build: ./redis
     expose:
-      - 6379
+      - "6379"
     networks:
       - intra_net
 
@@ -89,7 +89,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: /Users/seongwol/data
+      device: ${BASE_DIR}
       o: bind,rw
 
 networks:
