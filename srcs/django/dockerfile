@@ -5,14 +5,15 @@ RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
 		postgresql-client \
 	&& rm -rf /var/lib/apt/lists/*
-
+	
 WORKDIR /usr/src/app
 COPY ./backend .
-RUN pip install -r requirements.txt
-# BE 쪽에서 작업데이터의 루트를 이쪽으로 잡아와야한다. 경로 수정 반드시해야겠지?
-COPY . .
+RUN pip install -r requirements.txt && \
+	groupadd -r django && useradd -r -g django django && \
+	chown -R django:django /usr/src/app
 
 EXPOSE 8000
+USER django
 
-# 127.0.0.1:8080 수정해야겠지?
-CMD ["python3", "manage.py", "runserver", "127.0.0.1:8000"]
+ENTRYPOINT ["python3", "manage.py"]
+CMD ["runserver", "0.0.0.0:8000"]

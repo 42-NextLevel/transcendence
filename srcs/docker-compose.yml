@@ -1,25 +1,11 @@
 services:
-  front_end:
-    container_name: node
-    build:
-      context: ./node
-    user: "node"
-    environment:
-      - NODE_ENV=production
-    volumes:
-      - frontend:/home/node/app
-    expose:
-      - "8081"
-    networks:
-      - intra_net
-
-  back_end:
+  django:
     container_name: django
     build:
       context: ./django
     user: "django"
-    environment:
-      - DJANGO_ENV=production
+    env_file:
+      - .env
     volumes:
       - backend:/usr/src/app
     expose:
@@ -27,32 +13,30 @@ services:
     networks:
       - intra_net
 
-  database:
-    container_name: pgsql
-    build:
-      context: ./pgsql
-    restart: always
-    shm_size: 128mb
-    # 데이터 경로 찾아서 수정
-    volumes:
-      - database:/var/lib/postgresql/data
-    environment:
-      POSTGRES_PASSWORD: "1234"
-    networks:
-      - intra_net
+  # database:
+  #   container_name: pgsql
+  #   build:
+  #     context: ./pgsql
+  #   restart: always
+  #   shm_size: 128mb
+  #   # 데이터 경로 찾아서 수정
+  #   volumes:
+  #     - database:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_PASSWORD: "1234"
+  #   networks:
+  #     - intra_net
 
   nginx:
     container_name: nginx
     restart: always
     depends_on:
-      - database
+      - django
     build:
       context: ./nginx
       args:
         - CERT_KEY=${CERT_KEY}
         - CERT_CRT=${CERT_CRT}
-    volumes:
-      - frontend:/var/www/html
     ports:
       - "443:443"
     expose:
@@ -60,23 +44,16 @@ services:
     networks:
       - intra_net
 
-  redis:
-    container_name: redis
-    restart: always
-    build: ./redis
-    expose:
-      - "6379"
-    networks:
-      - intra_net
+  # redis:
+  #   container_name: redis
+  #   restart: always
+  #   build: ./redis
+  #   expose:
+  #     - "6379"
+  #   networks:
+  #     - intra_net
 
 volumes:
-  frontend:
-    name: frontend
-    driver: local
-    driver_opts:
-      type: none
-      device: ${PWD}/node/frontend
-      o: bind,rw
   backend:
     name: backend
     driver: local
@@ -89,7 +66,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${BASE_DIR}
+      device: ${DATA_PATH}
       o: bind,rw
 
 networks:

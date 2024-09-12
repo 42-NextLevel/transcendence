@@ -1,0 +1,30 @@
+FROM alpine:3.19
+
+ARG CERT_KEY \
+	CERT_CRT
+
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/servers/https-server.conf /etc/nginx/servers/https-server.conf
+
+# 여기다 우리 사이트 FE 파일 다 복사해놓고, npm 빌드까지 완료해서 local 에 잡고있는다.
+
+
+RUN apk update && \
+	apk upgrade && \
+	apk add --no-cache nginx node && \
+	mkdir -p /var/www/html/resume/ && \
+	mkdir -p /var/lib/nginx/var/run/ && \
+	chmod -R 755 /var/www/html && \
+	chown -R nginx:nginx /var/www/html /var/log/nginx /var/run/nginx && \
+	mkdir -p /etc/nginx/ssl && \
+	echo -e "$CERT_KEY" > /etc/nginx/ssl/transcendance.key && \
+	echo -e "$CERT_CRT" > /etc/nginx/ssl/transcendance.crt && \
+	chmod 600 /etc/nginx/ssl/transcendance.key && \
+	chmod 600 /etc/nginx/ssl/transcendance.crt && \
+	chown nginx:nginx /etc/nginx/ssl/transcendance.key && \
+	chown nginx:nginx /etc/nginx/ssl/transcendance.crt && \
+	chown -R nginx:nginx /var/lib/nginx/
+
+	# 우리 디렉토리 /app 하위에 파일 다 복사 && npm install && npm run build
+
+CMD [ "nginx", "-g", "daemon off;" ]
