@@ -1,0 +1,9 @@
+[submodule "srcs/django/backend"]
+	path = srcs/django/backend
+	url = https://github.com/42-NextLevel/backend
+[submodule "srcs/nginx/frontend"]
+	path = srcs/nginx/frontend
+	url = https://github.com/42-NextLevel/frontend
+[submodule "srcs/confidential"]
+	path = srcs/confidential
+	url = https://github.com/42-NextLevel/confidential
