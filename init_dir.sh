@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ENV_FILE="srcs/.env"
+ENV_FILE="srcs/confidential/.env"
 
 
 if [ "$(uname)" == "Darwin" ]; then
@@ -12,10 +12,10 @@ else
 fi
 
 if ! grep -q "DATA_PATH=" srcs/.env; then
-	if [ -s srcs/.env ] && [ "$(tail -c 1 srcs/.env | wc -l)" -eq 0 ]; then
-    echo "" >> srcs/.env
+	if [ -s $ENV_FILE ] && [ "$(tail -c 1 $ENV_FILE | wc -l)" -eq 0 ]; then
+    echo "" >> $ENV_FILE
 	fi
-    echo "DATA_PATH=$BASE_DIR" >> srcs/.env
+    echo "DATA_PATH=$BASE_DIR" >> $ENV_FILE
 fi
 
 if [ "$2" == "--delete" ]; then
