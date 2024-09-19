@@ -4,8 +4,6 @@ services:
     build:
       context: ./django
     user: "django"
-    env_file:
-      - .env
     volumes:
       - backend:/usr/src/app
     expose:
