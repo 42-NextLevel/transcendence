@@ -17,11 +17,14 @@ services:
       context: ./pgsql
     restart: always
     shm_size: 128mb
-    # 데이터 경로 찾아서 수정
     volumes:
       - database:/var/lib/postgresql/data
     environment:
-      POSTGRES_PASSWORD: "1234"
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8"
+      POSTGRES_PORT: ${DB_PORT}
     networks:
       - intra_net
 

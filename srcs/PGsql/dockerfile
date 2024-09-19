@@ -1,3 +1,7 @@
 # https://github.com/docker-library/docs/blob/master/postgres/README.md 참고해서 끝까지 작성할 것.
 
 FROM postgres:latest
+
+COPY conf/init_database.sh /docker-entrypoint-initdb.d/
+COPY conf/pg_hba.conf /etc/postgresql/
+RUN chmod +x /docker-entrypoint-initdb.d/init_database.sh
