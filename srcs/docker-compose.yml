@@ -13,19 +13,19 @@ services:
     networks:
       - intra_net
 
-  # database:
-  #   container_name: pgsql
-  #   build:
-  #     context: ./pgsql
-  #   restart: always
-  #   shm_size: 128mb
-  #   # 데이터 경로 찾아서 수정
-  #   volumes:
-  #     - database:/var/lib/postgresql/data
-  #   environment:
-  #     POSTGRES_PASSWORD: "1234"
-  #   networks:
-  #     - intra_net
+  database:
+    container_name: pgsql
+    build:
+      context: ./pgsql
+    restart: always
+    shm_size: 128mb
+    # 데이터 경로 찾아서 수정
+    volumes:
+      - database:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: "1234"
+    networks:
+      - intra_net
 
   nginx:
     container_name: nginx
@@ -44,14 +44,14 @@ services:
     networks:
       - intra_net
 
-  # redis:
-  #   container_name: redis
-  #   restart: always
-  #   build: ./redis
-  #   expose:
-  #     - "6379"
-  #   networks:
-  #     - intra_net
+  redis:
+    container_name: redis
+    restart: always
+    build: ./redis
+    expose:
+      - "6379"
+    networks:
+      - intra_net
 
 volumes:
   backend:
@@ -59,7 +59,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/django/backend
+      device: ${PWD}/srcs/django/backend
       o: bind,rw
   database:
     name: database

@@ -5,23 +5,23 @@ ENV_FILE="srcs/confidential/.env"
 
 if [ "$(uname)" == "Darwin" ]; then
     # macOS
-    BASE_DIR="/Users/$USER/data"
+    DATA_PATH="/Users/$USER/data"
 else
     # Linux
-    BASE_DIR="/home/$USER/data"
+    DATA_PATH="/home/$USER/data"
 fi
 
-if ! grep -q "DATA_PATH=" srcs/.env; then
+if ! grep -q "DATA_PATH=" $ENV_FILE; then
 	if [ -s $ENV_FILE ] && [ "$(tail -c 1 $ENV_FILE | wc -l)" -eq 0 ]; then
     echo "" >> $ENV_FILE
 	fi
-    echo "DATA_PATH=$BASE_DIR" >> $ENV_FILE
+    echo "DATA_PATH=$DATA_PATH" >> $ENV_FILE
 fi
 
-if [ "$2" == "--delete" ]; then
+if [ "$1" == "--delete" ]; then
     echo "Deleting volume..."
-    rm -rf "$BASE_DIR"
-    rm -rf "$BASE_DIR"
+    rm -rf "$DATA_PATH"
+    rm -rf "$DATA_PATH"
     echo "Delete COMPLETE!!!"
 
     if [ -f "$ENV_FILE" ]; then
@@ -32,8 +32,8 @@ if [ "$2" == "--delete" ]; then
     exit 0
 fi
 
-if [ ! -d "$BASE_DIR" ]; then
+if [ ! -d "$DATA_PATH" ]; then
     echo "Making directory..."
-	mkdir -p $BASE_DIR/databases/
+	mkdir -p $DATA_PATH
     echo "MAKE COMPLETE!!!"
 fi

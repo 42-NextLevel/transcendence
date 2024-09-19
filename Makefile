@@ -1,29 +1,33 @@
 SRCS = srcs
-DOCKER_COMPOSE := $(shell if command -v docker-compose >/dev/null 2>&1; then echo "docker-compose"; else echo "docker compose"; fi)
+ENV_FILE = srcs/confidential/.env
+DOCKER_COMPOSE := $(shell echo "docker compose")
+
+# 최종 배포용 v1 v2 호환
+# DOCKER_COMPOSE := $(shell if command -v docker-compose >/dev/null 2>&1; then echo "sudo -E docker-compose"; else echo "docker compose"; fi)
 
 all: dir
-	@sudo -E $(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml up -d
+	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 build: dir
-	@sudo -E $(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml up -d --build
+	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d --build
 
 down:
-	@sudo -E $(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml down -v
+	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} down -v
 
 re: clean
-	@sudo -E $(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml up -d
+	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 dir:
 	@bash ${SRCS}/init_dir.sh
 
 clean: down
-	@sudo -E docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
+	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
 
 fclean: down
-	@sudo -E docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
-	@sudo -E docker builder prune --force
-	@sudo -E docker network prune --force
-	@sudo -E docker volume prune --force
+	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
+	@docker builder prune --force
+	@docker network prune --force
+	@docker volume prune --force
 	@bash ${SRCS}/init_dir.sh --delete
 
 .PHONY	: all build down re clean fclean dir
