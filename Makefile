@@ -18,6 +18,7 @@ re: clean
 	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 dir:
+	@bash submodule_init.sh
 	@bash ${SRCS}/init_dir.sh
 
 clean: down
