@@ -38,6 +38,9 @@ services:
       args:
         - CERT_KEY=${CERT_KEY}
         - CERT_CRT=${CERT_CRT}
+        - VITE_CLIENT_ID=${FT_ID} 
+    environment:
+      VITE_CLIENT_ID: ${FT_ID}
     ports:
       - "443:443"
     expose:
