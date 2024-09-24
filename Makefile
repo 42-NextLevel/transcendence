@@ -21,8 +21,7 @@ dir:
 	@bash submodule_init.sh
 	@bash ${SRCS}/init_dir.sh
 
-clean: down
-	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
+clean: down all
 
 fclean: down
 	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm

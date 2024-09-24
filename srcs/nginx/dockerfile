@@ -13,7 +13,10 @@ COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 COPY ./conf/servers/https-server.conf /etc/nginx/servers/https-server.conf
 
 ARG CERT_KEY \
-	CERT_CRT
+	CERT_CRT \
+	VITE_API_URI \
+	VITE_REDIRECTION_URI \
+	VITE_CLIENT_ID
 
 RUN	mkdir -p /etc/nginx/ssl && \
 	echo -e "$CERT_KEY" > /etc/nginx/ssl/transcendance.key && \
@@ -23,8 +26,9 @@ RUN	mkdir -p /etc/nginx/ssl && \
 	chown nginx:nginx /etc/nginx/ssl/transcendance.key && \
 	chown nginx:nginx /etc/nginx/ssl/transcendance.crt && \
 	touch /usr/share/nginx/html/.env && \
-	echo "VITE_API_URI=$VITE_API_URI" >> /usr/share/nginx/html/.env && \
-	echo "VITE_REDIRECTION_URI=$VITE_REDIRECTION_URI" >> /usr/share/nginx/html/.env
+	echo "VITE_API_URI=${VITE_API_URI}" >> /usr/share/nginx/html/.env && \
+	echo "VITE_REDIRECTION_URI=${VITE_REDIRECTION_URI}" >> /usr/share/nginx/html/.env && \
+	echo "VITE_CLIENT_ID=${VITE_CLIENT_ID}" >> /usr/share/nginx/html/.env
 	
 EXPOSE 5173
 
