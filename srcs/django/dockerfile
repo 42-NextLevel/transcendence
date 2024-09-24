@@ -7,14 +7,18 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/*
 	
 WORKDIR /usr/src/app
-COPY ./backend .
-COPY entrypoint.sh .
+COPY backend .
+COPY ft_entrypoint.sh /ft_entrypoint.sh
 RUN pip install -r requirements.txt && \
 	groupadd -r django && useradd -r -g django django && \
+	chmod 777 /ft_entrypoint.sh && \
 	chown -R django:django /usr/src/app
 
 EXPOSE 8000
 USER django
 
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/ft_entrypoint.sh"]
 CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# ENTRYPOINT [ "/bin/bash" ]
+# CMD ["tail", "-f", "/dev/null"]

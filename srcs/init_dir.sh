@@ -33,7 +33,7 @@ if [ "$1" == "--delete" ]; then
 fi
 
 if [ ! -d "$DATA_PATH" ]; then
-    echo "Making directory..."
+    echo "Creating directory..."
 	mkdir -p $DATA_PATH
-    echo "MAKE COMPLETE!!!"
+    echo "Volume directory created!!!"
 fi
