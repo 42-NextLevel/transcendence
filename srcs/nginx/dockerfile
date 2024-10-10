@@ -1,31 +1,11 @@
-FROM node:20 AS build-stage
-WORKDIR /app
-COPY frontend .
-
-ARG VITE_API_URI \
-	VITE_REDIRECT_URI \
-	VITE_CLIENT_ID
-
-RUN echo "VITE_API_URI=${VITE_API_URI}" >> .env && \
-	echo "VITE_REDIRECT_URI=${VITE_REDIRECT_URI}" >> .env && \
-	echo "VITE_CLIENT_ID=${VITE_CLIENT_ID}" >> .env
-
-RUN npm install
-RUN npm run build
-
 # Production stage
 FROM nginx:stable-alpine AS production-stage
-
-COPY --from=build-stage /app/dist /usr/share/nginx/html/
 
 COPY ./conf/nginx.conf /etc/nginx/nginx.conf
 COPY ./conf/servers/https-server.conf /etc/nginx/servers/https-server.conf
 
 ARG CERT_KEY \
 	CERT_CRT
-	# VITE_API_URI \
-	# VITE_REDIRECTION_URI \
-	# VITE_CLIENT_ID
 
 RUN	mkdir -p /etc/nginx/ssl && \
 	echo -e "$CERT_KEY" > /etc/nginx/ssl/transcendance.key && \
@@ -34,9 +14,6 @@ RUN	mkdir -p /etc/nginx/ssl && \
 	chmod 600 /etc/nginx/ssl/transcendance.crt && \
 	chown nginx:nginx /etc/nginx/ssl/transcendance.key && \
 	chown nginx:nginx /etc/nginx/ssl/transcendance.crt
-	# echo "VITE_API_URI=${VITE_API_URI}" >> /usr/share/nginx/html/.env && \
-	# echo "VITE_REDIRECTION_URI=${VITE_REDIRECTION_URI}" >> /usr/share/nginx/html/.env && \
-	# echo "VITE_CLIENT_ID=${VITE_CLIENT_ID}" >> /usr/share/nginx/html/.env
 	
 EXPOSE 5173
 
