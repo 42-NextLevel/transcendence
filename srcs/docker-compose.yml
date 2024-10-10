@@ -45,7 +45,7 @@ services:
         - VITE_CLIENT_ID=${FT_ID} 
         - VITE_API_URI=${VITE_API_URI}
         - VITE_REDIRECT_URI=${VITE_REDIRECT_URI}
-        - VITE_WEBSOCKET_ROOM_ID=${VITE_WEBSOCKET_ROOM_ID}
+        - VITE_ROOM_WEBSOCKET_URI=${VITE_ROOM_WEBSOCKET_URI}
     ports:
       - "443:443"
     expose:
