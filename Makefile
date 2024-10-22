@@ -6,7 +6,8 @@ DOCKER_COMPOSE := $(shell echo "docker compose")
 # DOCKER_COMPOSE := $(shell if command -v docker-compose >/dev/null 2>&1; then echo "sudo -E docker-compose"; else echo "docker compose"; fi)
 
 all: dir
-	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
+	-cp ./srcs/confidential/.env ./srcs/node/frontend/
+	-@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 build: dir
 	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d --build
@@ -21,7 +22,8 @@ dir:
 	@bash submodule_init.sh
 	@bash ${SRCS}/init_dir.sh
 
-clean: down all
+clean: down
+	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
 
 fclean: down
 	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm

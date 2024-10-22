@@ -12,6 +12,8 @@ services:
       - backend:/usr/src/app
     expose:
       - "8000"
+    ports:
+      - 8000:8000
     networks:
       - intra_net
 
@@ -48,12 +50,25 @@ services:
         - VITE_ROOM_WEBSOCKET_URI=${VITE_ROOM_WEBSOCKET_URI}
     env_file:
       - ./confidential/.env
-    volumes:
-      - frontend:/usr/share/nginx/html
     ports:
       - "443:443"
     expose:
       - "443"
+    networks:
+      - intra_net
+
+  node:
+    container_name: node
+    restart: always
+    # user: "node"
+    build:
+      context: ./node
+    volumes:
+      - frontend:/home/node/app
+    ports:
+      - 3100:3100
+    expose:
+      - "3100"
     networks:
       - intra_net
 
@@ -72,7 +87,7 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: ${PWD}/srcs/nginx/frontend
+      device: ${PWD}/srcs/node/frontend
       o: bind,rw
   backend:
     name: backend
