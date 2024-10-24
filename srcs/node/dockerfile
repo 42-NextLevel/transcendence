@@ -1,9 +1,13 @@
 FROM node:22
 
-WORKDIR /home/node/app
+WORKDIR /app
 
 COPY --chmod=755 ./tools/entrypoint.sh /
+COPY --chmod=644 frontend/package.json ./
+COPY --chmod=644 frontend/package-lock.json ./
+RUN npm install
 EXPOSE 3100
+EXPOSE 24678
 
 # USER node
 

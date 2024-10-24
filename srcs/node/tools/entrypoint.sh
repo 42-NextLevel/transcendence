@@ -1,8 +1,8 @@
 #!/bin/sh
 
-echo "Installing dependencies..."
-rm -rf node_modules
-mkdir node_modules
-npm ci || npm install
+if [ ! -d "node_modules" ]; then
+    echo "node_modules not found, installing dependencies..."
+    npm install
+fi
 
 exec "$@"

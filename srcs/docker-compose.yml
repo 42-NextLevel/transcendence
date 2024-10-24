@@ -60,13 +60,14 @@ services:
   node:
     container_name: node
     restart: always
-    # user: "node"
     build:
       context: ./node
     volumes:
-      - frontend:/home/node/app
+      - frontend:/app
+      - /app/node_modules
     ports:
       - 3100:3100
+      - 24678:24678
     expose:
       - "3100"
     networks:
@@ -88,21 +89,21 @@ volumes:
     driver_opts:
       type: none
       device: ${PWD}/srcs/node/frontend
-      o: bind,rw
+      o: bind
   backend:
     name: backend
     driver: local
     driver_opts:
       type: none
       device: ${PWD}/srcs/django/backend
-      o: bind,rw
+      o: bind
   database:
     name: database
     driver: local
     driver_opts:
       type: none
       device: ${DATA_PATH}
-      o: bind,rw
+      o: bind
 
 networks:
   intra_net:
