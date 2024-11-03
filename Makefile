@@ -19,22 +19,22 @@ re: clean
 	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 dir:
-	@bash submodule_init.sh
+	# @bash submodule_init.sh
 	@bash ${SRCS}/init_dir.sh
 
 back: down
 	@git -C ${SRCS}/django/backend pull
-	@docker image rm srcs-django
+	@docker image rm srcs_django
 	$(MAKE) all
 
 clean: down
-	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
+	@docker image ls | grep '${SRCS}' | awk '{print $$1}' | xargs docker image rm
 
 fclean: down
-	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
-	@docker builder prune --force
-	@docker network prune --force
-	@docker volume prune --force
-	@bash ${SRCS}/init_dir.sh --delete
+	-@docker image ls | grep '${SRCS}' | awk '{print $$1}' | xargs docker image rm
+	-@docker builder prune --force --all
+	-@docker network prune --force
+	-@docker system prune --force --all
+	-@bash ${SRCS}/init_dir.sh --delete
 
 .PHONY	: all build down re clean fclean dir

@@ -95,7 +95,7 @@ export default defineConfig({
       path: 'hmr',
       protocol: 'wss',
       clientPort: 443,
-      host: 'localhost'
+      host: '10.13.8.4'
     }
   },
 });
