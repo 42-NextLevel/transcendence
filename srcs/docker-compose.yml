@@ -82,6 +82,32 @@ services:
     networks:
       - intra_net
 
+  log-viewer:
+    container_name: dozzle
+    image: amir20/dozzle:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "10000:8080"
+    expose:
+      - 8080
+    networks:
+      - intra_net
+
+  adminer:
+    container_name: adminer
+    restart: always
+    build: ./adminer
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    networks:
+      - intra_net
+  
+
 volumes:
   frontend:
     name: frontend
