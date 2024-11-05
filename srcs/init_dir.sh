@@ -22,10 +22,7 @@ if [ "$1" == "--delete" ]; then
     echo "Deleting volume..."
     rm -rf "$DATA_PATH"
     rm -rf "$DATA_PATH"
-<<<<<<< Updated upstream
-=======
 
->>>>>>> Stashed changes
     echo "Delete COMPLETE!!!"
 
     if [ -f "$ENV_FILE" ]; then
