@@ -12,8 +12,6 @@ services:
       - backend:/usr/src/app
     expose:
       - "8000"
-    ports:
-      - 8000:8000
     networks:
       - intra_net
 
@@ -44,7 +42,7 @@ services:
       args:
         - CERT_KEY=${CERT_KEY}
         - CERT_CRT=${CERT_CRT}
-        - VITE_CLIENT_ID=${FT_ID} 
+        - VITE_CLIENT_ID=${FT_ID}
         - VITE_API_URI=${VITE_API_URI}
         - VITE_REDIRECT_URI=${VITE_REDIRECT_URI}
         - VITE_ROOM_WEBSOCKET_URI=${VITE_ROOM_WEBSOCKET_URI}
@@ -93,6 +91,7 @@ services:
       - 8080
     networks:
       - intra_net
+    init: true
 
   adminer:
     container_name: adminer
@@ -102,11 +101,11 @@ services:
       - "8080:8080"
     expose:
       - "8080"
+    init: true
     environment:
       ADMINER_DEFAULT_SERVER: database
     networks:
       - intra_net
-  
 
 volumes:
   frontend:

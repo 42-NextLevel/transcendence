@@ -22,10 +22,8 @@ dir:
 	# @bash submodule_init.sh
 	@bash ${SRCS}/init_dir.sh
 
-back: down
+back:
 	@git -C ${SRCS}/django/backend pull
-	@docker image rm srcs_django
-	$(MAKE) all
 
 clean: down
 	@docker image ls | grep '${SRCS}' | awk '{print $$1}' | xargs docker image rm

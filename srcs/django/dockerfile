@@ -12,7 +12,9 @@ COPY ft_entrypoint.sh /ft_entrypoint.sh
 RUN pip install -r requirements.txt && \
 	groupadd -r django && useradd -r -g django django && \
 	chmod 777 /ft_entrypoint.sh && \
-	chown -R django:django /usr/src/app
+	chown -R django:django /usr/src/app && \
+	mkdir -p /home/django && \
+	chown -R django:django /home/django
 
 EXPOSE 8000
 USER django
