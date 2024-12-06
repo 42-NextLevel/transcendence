@@ -23,12 +23,6 @@ if [ "$1" == "--delete" ]; then
     rm -rf "$DATA_PATH"
     rm -rf "$DATA_PATH"
 
-    # 작업 깃에서만 쓸 명령어
-    cd srcs/confidential
-    git restore .
-    cd -
-    # 입니다 나중에 지워야함.
-
     echo "Delete COMPLETE!!!"
 
     if [ -f "$ENV_FILE" ]; then

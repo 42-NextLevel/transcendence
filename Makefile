@@ -6,7 +6,8 @@ DOCKER_COMPOSE := $(shell echo "docker compose")
 # DOCKER_COMPOSE := $(shell if command -v docker-compose >/dev/null 2>&1; then echo "sudo -E docker-compose"; else echo "docker compose"; fi)
 
 all: dir
-	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
+	-cp ./srcs/confidential/.env ./srcs/nginx/frontend/
+	-@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 build: dir
 	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d --build
@@ -18,16 +19,20 @@ re: clean
 	@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 dir:
-	@bash submodule_init.sh
+	# @bash submodule_init.sh
 	@bash ${SRCS}/init_dir.sh
 
-clean: down all
+back:
+	@git -C ${SRCS}/django/backend pull
+
+clean: down
+	@docker image ls | grep '${SRCS}' | awk '{print $$1}' | xargs docker image rm
 
 fclean: down
-	@docker image ls | grep '${SRCS}-' | awk '{print $$1}' | xargs docker image rm
-	@docker builder prune --force
-	@docker network prune --force
-	@docker volume prune --force
-	@bash ${SRCS}/init_dir.sh --delete
+	-@docker image ls | grep '${SRCS}' | awk '{print $$1}' | xargs docker image rm
+	-@docker builder prune --force --all
+	-@docker network prune --force
+	-@docker system prune --force --all
+	-@bash ${SRCS}/init_dir.sh --delete
 
 .PHONY	: all build down re clean fclean dir

@@ -8,5 +8,6 @@ done
 >&2 echo "PostgreSQL is up - executing Django commands"
 
 python3 manage.py migrate
+python3 manage.py insert_dummy_data
 
 exec "$@"
