@@ -4,3 +4,6 @@
 [submodule "srcs/confidential"]
 	path = srcs/confidential
 	url = https://github.com/42-NextLevel/confidential
+[submodule "srcs/nginx/frontend"]
+	path = srcs/nginx/frontend
+	url = https://github.com/42-NextLevel/frontend.git

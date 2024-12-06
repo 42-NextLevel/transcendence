@@ -6,7 +6,7 @@ DOCKER_COMPOSE := $(shell echo "docker compose")
 # DOCKER_COMPOSE := $(shell if command -v docker-compose >/dev/null 2>&1; then echo "sudo -E docker-compose"; else echo "docker compose"; fi)
 
 all: dir
-	-cp ./srcs/confidential/.env ./srcs/node/frontend/
+	-cp ./srcs/confidential/.env ./srcs/nginx/frontend/
 	-@$(DOCKER_COMPOSE) -f ./${SRCS}/docker-compose.yml --env-file ${ENV_FILE} up -d
 
 build: dir
